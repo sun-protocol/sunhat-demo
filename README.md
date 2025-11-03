@@ -1,135 +1,177 @@
-# sun-studio-demo
-sun-studio-demo
+# sunhat-demo
 
-## ENV
+This repository serves as a tutorial and demonstration for [Sunhat](https://github.com/sun-protocol/sunhat), a Hardhat-based development environment for TRON and EVM-compatible smart contracts.
 
+## Environment Setup
+
+Before you begin, ensure you have the following prerequisites installed on your system.
+
+*   **Node.js**: Version `22.14.0` or higher.
+    > [Download Node.js](https://nodejs.org/en/download)
+
+*   **pnpm**: Version `10.6.5` or higher.
+    ```bash
+    npm install -g pnpm
+    ```
+
+*   **Foundry**: A smart contract development toolchain.
+    > [Foundry Installation Guide](https://book.getfoundry.sh/getting-started/installation)
+    ```bash
+    # Install Foundry
+    curl -L https://foundry.paradigm.xyz | bash
+    # Set Foundry to the nightly channel
+    foundryup --install nightly
+    ```
+
+## Getting Started
+
+### 1. Clone and Install Dependencies
+
+First, clone this repository and install the necessary dependencies, including Hardhat and Sunhat.
+
+```bash
+# Clone the repository (replace with your URL)
+git clone https://github.com/your-username/sunhat-demo.git
+cd sunhat-demo
+
+# Install dependencies
+pnpm install
 ```
-node >= v22.14.0
-npm >= 10.9.2
-@sun-protocol/sun-studio >= 0.2.2
 
+### 2. Configure Your Environment
+
+Export you private key of the deployer account.
+
+```env
+# env
+PRIVATE_KEY=YOUR_PRIVATE_KEY_HERE
 ```
-## How To Use SunStudio
 
-### Installation
+## Hardhat Configuration (`hardhat.config.ts`)
 
-```
-npm install 
+The `hardhat.config.ts` file is the central place to manage your project's settings.
 
-```
-### Hardhat Configuration
-in `hardhat.config.ts`, you can configure the parameters for the compiler and networks.
+#### **Compiler Configuration**
 
-**compilers:**
+You can configure multiple versions of the Solidity and Vyper compilers.
 
-You can compile using different versions of the Solidity and Vyper compilers simultaneously. 
-
-```
+```typescript
+// hardhat.config.ts
 solidity: {
-    compilers: [ // different versions of the Solidity
-      { "version": "0.8.23", settings },
-      { "version": "0.8.22", settings },
-    ]
-  },
-  vyper: { 
-    compilers: [ // different versions of the Vyper
-      { "version": "0.2.8" },
-      { "version": "0.3.10" }
-    ]
-  },
+  compilers: [ // An array for different Solidity versions
+    { version: "0.8.23", settings: { /* ... */ } },
+    { version: "0.8.22", settings: { /* ... */ } },
+  ]
+},
+vyper: {
+  compilers: [ // An array for different Vyper versions
+    { version: "0.2.8" },
+    { version: "0.3.10" }
+  ]
+}
 ```
 
-**networks:**
+#### **Network Configuration**
 
-You can add the Tron network and other EVM-compatible networks.
+Define the networks for deployment and testing. The configuration below includes TRON's Nile testnet, Sepolia, and a local node.
 
-```
+```typescript
+// hardhat.config.ts
 networks: {
-    localhost: {
-      live: false,
-      saveDeployments: true,
-      tags: ["local"],
-      deploy: ['deploy/'],
-    },
-    tron: {
-      url: "https://nile.trongrid.io/jsonrpc",
-      tron: true,
-      deploy: ['deployTron/'],
-      accounts: [`${process.env.PRIVATE_KEY}`],
-    },
-    sepolia: {
-      url: "https://sepolia.drpc.org",
-      tron: false,
-      deploy: ['deploy/'],
-      accounts: [`${process.env.PRIVATE_KEY}`],
-    }
-  }
-```
-
-**others**
-
-tronSolc support
-
-```
-  tronSolc: {
-    enable: true, //if using the tronSolc
+  localhost: {
+    live: false,
+    saveDeployments: true,
+    tags: ["local"],
+    deploy: ['deploy/'],
   },
-```
-
-namedAccount
-
-```
-namedAccounts: {
-    deployer: {
-      default: 0, // here this will by default take the first account as deployer
-    }
+  tron: {
+    url: "https://nile.trongrid.io/jsonrpc",
+    tron: true, // Required for TRON networks
+    deploy: ['deployTron/'],
+    accounts: [`${process.env.PRIVATE_KEY}`],
+  },
+  sepolia: {
+    url: "https://sepolia.drpc.org",
+    tron: false,
+    deploy: ['deploy/'],
+    accounts: [`${process.env.PRIVATE_KEY}`],
   }
+}
 ```
 
-### Compile
+#### **Additional Sunhat Configuration**
 
+-   **tronSolc Support**: Enable this if you are using the `tronSolc` compiler.
+    ```typescript
+    tronSolc: {
+      enable: true,
+    }
+    ```
+
+-   **Named Accounts**: Assign names to accounts for easy reference in scripts and tests.
+    ```typescript
+    namedAccounts: {
+      deployer: {
+        default: 0, // The first account is assigned as 'deployer'
+      }
+    }
+    ```
+
+## Core Commands
+
+### Compile Contracts
+
+Compile all source code in the `contracts/` directory.
+
+```bash
+pnpm compile
 ```
-npx hardhat compile
 
-```
-or
+### Run Unit Tests
 
-```
-npm run compile
-```
+This project supports testing with both Hardhat and Foundry.
 
-### Unit-Test
+#### **Hardhat Tests**
 
-#### hardhat test
+Run the test files located in the `test/` directory.
 
-```
+```bash
 npx hardhat test
 ```
-or
-```
+or use the npm script:
+```bash
 npm run test
 ```
-#### foundry test
-Initial foundry:
-```
+
+#### **Foundry Tests**
+
+First, initialize Foundry within the project, then run the tests.
+
+```bash
+# Initialize Foundry
 npm run init-foundry
-```
-Run test
-```
+
+# Run Foundry tests
 npm run test-foundry
 ```
 
-### Deploy
+### Deploy Contracts
 
-Rewrite the `deploy/` or `deployTron/` scripts to deploy contracts, and run
+Deployment scripts are located in the `deploy/` (for EVM) and `deployTron/` (for TRON) directories.
 
-```
-npx hardhat deploy --network xxx --tags xxxx
-```
-or 
-```
-npm run deploy-tron   // tron network  
-npm run deploy        // EVM-compatible network
+To deploy, run the following command, specifying the target network:
+```bash
+npx hardhat deploy --network {network_name} --tags {tag_name}
 ```
 
-You can check deployed contracts in `deployments/network/contractName.json`
+Alternatively, you can use the predefined npm scripts:
+
+```bash
+# Deploy to the TRON network (as configured)
+npm run deploy-tron
+
+# Deploy to an EVM-compatible network (as configured)
+npm run deploy
+```
+
+After a successful deployment, artifacts containing the contract address and ABI are saved to `deployments/{network_name}/{ContractName}.json`.
