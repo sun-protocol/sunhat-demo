@@ -62,7 +62,8 @@ contract TokenTest is Test {
         vm.warp(86401);
         vm.prank(owner);
         l.withdraw();
+        vm.breakpoint("a");
         assertEq(owner.balance, 100 ether);
-         assertEq(address(l).balance, 0);
+        assertEq(address(l).balance, 0);
     }
 }

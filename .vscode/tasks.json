@@ -1,0 +1,29 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "coverage",
+			"problemMatcher": [],
+			"group": "test",
+			"label": "npm: coverage",
+			"detail": "npx hardhat coverage"
+		},
+		{
+			"type": "npm",
+			"script": "vscode-audit",
+			"problemMatcher": [],
+			"group": "build",
+			"label": "npm: vscode-audit",
+			"detail": "npx hardhat audit --format json"
+		},
+		{
+			"type": "npm",
+			"script": "deploy-tron",
+			"problemMatcher": [],
+			"group": "build",
+			"label": "npm: deploy-tron",
+			"detail": "npx hardhat --network tron deploy --tags lumi"
+		}
+	]
+}

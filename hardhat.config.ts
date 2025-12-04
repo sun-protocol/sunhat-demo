@@ -17,8 +17,7 @@ const settings = {
 const config: HardhatUserConfig = {
   solidity: {
     compilers: [
-      { version: '0.8.23', settings }, // current solc version 1
-      { version: '0.8.22', settings }, // current solc version 2, you should set the same settings for all solc versions required .
+      { version: '0.8.25', settings }, // current solc version 1
     ],
   },
   vyper: {
@@ -55,6 +54,38 @@ const config: HardhatUserConfig = {
   namedAccounts: {
     deployer: {
       default: 0, // here this will by default take the first account as deployer
+    },
+  },
+  llm: {
+    defaultProvider: 'azure_openai',
+    // promptTemplate:
+    //   'As a world-class smart contract auditor, please perform a detailed security review of the following {language} code from the file "{contractName}". Focus especially on re-entrancy, integer overflows, and access control issues.',
+    providers: {
+      openai: {
+        apiKey: `${process.env.OPENAI_API_KEY}`,
+        model: 'gpt-4o',
+      },
+      azure_openai: {
+        apiKey: `${process.env.OPENAI_API_KEY}`,
+        endpoint: `${process.env.OPENAI_ENDPOINT}`,
+        deploymentName: `${process.env.OPENAI_DEPLOYMENT}`,
+        apiVersion: `${process.env.OPENAI_API_VERSION}`,
+        model: 'gpt-4o',
+      },
+      gemini: {
+        apiKey: `${process.env.GEMINI_API_KEY}`,
+        model: 'gemini-2.5-pro',
+      },
+      qwen: {
+        apiKey: `${process.env.QWEN_API_KEY}`,
+        model: 'qwen-turbo',
+        baseURL: `${process.env.QWEN_BASE_URL}`,
+      },
+      deepseek: {
+        apiKey: `${process.env.DEEPSEEK_API_KEY}`,
+        model: 'deepseek-coder',
+        baseURL: `${process.env.DEEPSEEK_BASE_URL}`,
+      },
     },
   },
 };
