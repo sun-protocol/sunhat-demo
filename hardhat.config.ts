@@ -35,12 +35,12 @@ const config: HardhatUserConfig = {
       deploy: ['deploy/'], // folder for deploy scripts
       // accounts: [`1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef`],
     },
-    // tron: {
-    //   url: 'https://nile.trongrid.io/jsonrpc', // tron mainnet rpc url
-    //   tron: true, // enable tron network
-    //   deploy: ['deployTron/'], // folder for tron deploy scripts
-    //   accounts: [`${process.env.PRIVATE_KEY}`], // account private key for deploy
-    // },
+    tron: {
+      url: 'https://nile.trongrid.io/jsonrpc', // tron mainnet rpc url
+      tron: true, // enable tron network
+      deploy: ['deployTron/'], // folder for tron deploy scripts
+      accounts: process.env.PRIVATE_KEY ? [`${process.env.PRIVATE_KEY}`] : [], // account private key for deploy
+    },
     // sepolia: {
     //   url: "https://sepolia.drpc.org",
     //   tron: false,
